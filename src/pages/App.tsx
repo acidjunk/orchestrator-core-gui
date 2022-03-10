@@ -28,7 +28,8 @@ import ProductBlock from "components/ProductBlock";
 import ProtectedRoute from "components/ProtectedRoute";
 import GlobalContextProviders from "contextProviders/globalContextProviders";
 import manifest from "custom/manifest.json";
-import { createBrowserHistory } from "history";
+import { ENV } from "env";
+dimport { createBrowserHistory } from "history";
 import { intl, setLocale } from "locale/i18n";
 import { memoize } from "lodash";
 import MetaData from "pages/MetaData";
@@ -161,6 +162,19 @@ class App extends React.PureComponent<IProps, IState> {
     };
 
     async componentDidMount() {
+        if (ENV.REVIEW_APP) {
+            const script = document.createElement("script");
+            script.src = "https://gitlab.com/assets/webpack/visual_review_toolbar.js";
+            script.id = "review-app-toolbar-script";
+            script.setAttribute("data-project-id", ENV.CI_PROJECT_ID);
+            script.setAttribute("data-merge-request-id", ENV.CI_MERGE_REQUEST_IID);
+            script.setAttribute("data-mr-url", ENV.GITLAB_URL);
+            script.setAttribute("data-project-path", ENV.CI_PROJECT_PATH);
+            script.setAttribute("data-require-auth", "true");
+            script.async = true;
+            document.head.appendChild(script);
+        }
+
         await this.loadData();
         this.importCustomPages();
     }
