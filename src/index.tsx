@@ -27,10 +27,6 @@ import { websocketService } from "websocketService";
 
 const appElement = document.getElementById("app");
 
-if (module.hot) {
-    module.hot.accept();
-}
-
 if (ENV.TRACING_ENABLED) {
     console.log("Initialized Sentry");
     Sentry.init({
@@ -114,5 +110,21 @@ if (ENV.OAUTH2_ENABLED) {
         appElement
     );
 } else {
-    ReactDOM.render(<App />, appElement);
+    // Todo: also implement it in the if
+    ReactDOM.render(
+        <>
+            <link
+                rel="stylesheet"
+                type="text/css"
+                href={localStorage.getItem("darkMode") || false ? "/eui_theme_dark.css" : "/eui_theme_light.css"}
+            />
+            <link
+                rel="stylesheet"
+                type="text/css"
+                href={localStorage.getItem("darkMode") || false ? "/dark.css" : "/light.css"}
+            />
+            <App />
+        </>,
+        appElement
+    );
 }
